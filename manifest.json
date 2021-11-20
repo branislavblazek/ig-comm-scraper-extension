@@ -1,0 +1,27 @@
+{
+    "name": "IG comments scraper",
+    "description": "Scraper for Instagram comments in Chrome extension!",
+    "version": "1.0",
+    "manifest_version": 3,
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "run_at": "document_idle"
+        }
+    ],
+    "background": {
+        "service_worker": "background.js",
+        "type": "module"
+    },
+    "action": {
+        "default_title": "Click me to open a new window"
+    },
+    "permissions": [
+        "activeTab"
+    ]
+}
