@@ -1,12 +1,20 @@
-async function getCurrentTab() {
-    let queryOptions = { active: true, currentWindow: true };
-    let [tab] = await chrome.tabs.query(queryOptions);
-    return tab;
+const actions = {
+    GET_BUTTON_FROM_DOM: {
+        REQUEST: 'getButtonFromDOMRequest',
+        RESPONSE: 'getButtonFromDOMResponse',
+    }
 }
 
-chrome.action.onClicked.addListener(() => {
-    const tab = getCurrentTab();
-    console.log('ahoj');
-    chrome.runtime.sendMessage({ "message": 'testikos' });
-});
+const sendMessage = (tabId, type, payload) => {
+    chrome.tabs.sendMessage(
+        tabId,
+        { type, payload },
+        (e) => { console.log(e) }
+    );
+}
 
+let state = [];
+
+const updateState = newItems => state.push(newItems);
+
+chrome.action.onClicked.addListener(tab => sendMessage(tab.id, actions.GET_BUTTON_FROM_DOM.REQUEST, null));
