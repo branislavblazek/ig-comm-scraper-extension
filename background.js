@@ -1,20 +1,29 @@
-const actions = {
-    GET_BUTTON_FROM_DOM: {
-        REQUEST: 'getButtonFromDOMRequest',
-        RESPONSE: 'getButtonFromDOMResponse',
-    }
+const type = {
+    GET_BUTTON_FROM_DOM: 'getButtonFromDOM',
+    CONSOLE_LOG: 'consoleLog'
 }
 
-const sendMessage = (tabId, type, payload) => {
-    chrome.tabs.sendMessage(
-        tabId,
-        { type, payload },
-        (e) => { console.log(e) }
-    );
+const action = {
+    [type.GET_BUTTON_FROM_DOM]: () => sendMessage(
+        type.GET_BUTTON_FROM_DOM,
+        null,
+        payload => sendMessage(type.CONSOLE_LOG, payload)
+    ),
+    [type.CONSOLE_LOG]: payload => sendMessage(type.CONSOLE_LOG, payload)
 }
 
-let state = [];
+const runAction = type => action[type]();
 
-const updateState = newItems => state.push(newItems);
+const sendMessage = (type, payload, callback = () => { }) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        chrome.tabs.sendMessage(
+            tabs[0].id,
+            { type, payload },
+            callback,
+        );
+    });
+};
 
-chrome.action.onClicked.addListener(tab => sendMessage(tab.id, actions.GET_BUTTON_FROM_DOM.REQUEST, null));
+const handleInit = tab => runAction(type.GET_BUTTON_FROM_DOM);
+
+chrome.action.onClicked.addListener(handleInit);
