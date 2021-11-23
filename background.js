@@ -1,18 +1,34 @@
 const type = {
-    GET_BUTTON_FROM_DOM: 'getButtonFromDOM',
+    CLICK_ON_MORE_BUTTON: 'clickOnMoreButton',
     CONSOLE_LOG: 'consoleLog'
 }
 
+const answer = {
+    OK: 'ok',
+    FAIL: 'fail'
+};
+
+let buttonClicks = 0;
+
 const action = {
-    [type.GET_BUTTON_FROM_DOM]: () => sendMessage(
-        type.GET_BUTTON_FROM_DOM,
+    [type.CLICK_ON_MORE_BUTTON]: () => sendMessage(
+        type.CLICK_ON_MORE_BUTTON,
         null,
-        payload => sendMessage(type.CONSOLE_LOG, payload)
+        payload => {
+            if (payload === answer.OK) {
+                buttonClicks += 1;
+                consoleLog(`Button was clicked for ${buttonClicks} times.`);
+                clickOnMoreButton();
+            } else if (payload === answer.FAIL) { consoleLog(`Problem with Button at ${buttonClicks} click.`) }
+            else { consoleLog(`Unregistred error with Button at ${buttonClicks} click.`) }
+
+        },
     ),
     [type.CONSOLE_LOG]: payload => sendMessage(type.CONSOLE_LOG, payload)
 }
 
-const runAction = type => action[type]();
+const clickOnMoreButton = () => action[type.CLICK_ON_MORE_BUTTON]();
+const consoleLog = payload => action[type.CONSOLE_LOG](payload);
 
 const sendMessage = (type, payload, callback = () => { }) => {
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
@@ -21,9 +37,8 @@ const sendMessage = (type, payload, callback = () => { }) => {
             { type, payload },
             callback,
         );
+        buttonClicks = 0;
     });
 };
 
-const handleInit = tab => runAction(type.GET_BUTTON_FROM_DOM);
-
-chrome.action.onClicked.addListener(handleInit);
+chrome.action.onClicked.addListener(() => clickOnMoreButton());
