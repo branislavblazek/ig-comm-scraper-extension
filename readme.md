@@ -1,4 +1,4 @@
-IG Comments Scraper - Chrome Extension
+# IG Comments Scraper - Chrome Extension
 
 This extension scrape all comments from Instagram post. 
 Extension is made because all Instagram scrapers on Github must be installed with a lot of dependencies
@@ -18,5 +18,8 @@ xxx
 8. Wait until all the commands are finished (it depends on the number of comments)
 9. In Console you can see the output
 
-# Branislav Blazek, 2021
-# Spread this code, not Corona
+
+
+// Branislav Blazek, 2021
+
+// Spread this code, not Corona
