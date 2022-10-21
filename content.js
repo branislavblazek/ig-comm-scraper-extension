@@ -14,6 +14,7 @@ const clickOnMoreButton = () => {
         const getScript = label => document.querySelectorAll(`[aria-label="${label}"]`)[0]?.parentElement?.parentElement
         const button = await getScript("Načítať ďalšie komentáre") || await getScript('Load more comments');
         if (button) {
+            console.log('mam button')
             button.click();
             resolve(answer.OK)
         } else reject(answer.FAIL);
@@ -22,10 +23,10 @@ const clickOnMoreButton = () => {
 
 const scrapeFunction = scrapeFn => {
     return new Promise(async (resolve, reject) => {
-        const data = [...document.querySelectorAll('.Mr508')].map(comments => {
-            const comment = comments.querySelector('.C4VMK');
-            const user = comment.querySelector('a').textContent;
-            const text = comment.querySelector('span:nth-child(2)').textContent;
+        const data = [...document.querySelectorAll('._a9ym')].map(comments => {
+            const comment = comments.querySelector('._a9zr');
+            const user = comment.querySelector('h3._a9zc').textContent;
+            const text = comment.querySelector('div._a9zs').textContent;
             return {
                 author: user,
                 comment: text,
